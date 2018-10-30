@@ -11,10 +11,8 @@ local time = os.date("*t")
 -- 1) verlichting: handmatige bediening met xiaomi-buttons
 -- 2) beweging: dummy motionsensor(s) aan zetten
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
--- 4) verlichting: status "donker" bij minder dan 750 lux op xiaomi gateway
+-- 4) vervallen
 -- 5) verlichting: licht aan in de hal wanneer er beweging is
-
-
 
 -- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
 function lichtXiaomi(xiaomiSwitch)
@@ -33,7 +31,6 @@ function lichtXiaomi(xiaomiSwitch)
   end
 end
 
-
 -- 2) beweging: dummy motionsensor(s) aan zetten
 function beweging(pir,sensor)
   if otherdevices[pir] == "On" then
@@ -48,6 +45,7 @@ function lichtUit(lichtknop)
   end
 end
 
+-- 4) vervallen
 
 -- 5) verlichting: licht aan in de hal wanneer er beweging is
 function lichtHal(lamp)
@@ -56,24 +54,6 @@ function lichtHal(lamp)
     commandArray[#commandArray + 1] = {[lamp] = "Off AFTER 450"}
   end
 end
-
--- test
-function test(device,lamp)
-  if otherdevices[device] == "flip90" then
-    commandArray[#commandArray + 1] = {[lamp] = "Set Level 57"}
-    commandArray[#commandArray + 1] = {[device] = "Off AFTER 5"}
-  elseif otherdevices[device] == "flip180" then
-    commandArray[#commandArray + 1] = {[lamp] = "Set Level 80"}
-    commandArray[#commandArray + 1] = {[device] = "Off AFTER 5"}
-  elseif otherdevices[device] == "tap_twice" then
-    commandArray[#commandArray + 1] = {[lamp] = "Set Level 25"}
-    commandArray[#commandArray + 1] = {[device] = "Off AFTER 5"}
-  elseif otherdevices[device] == "shake_air" then
-    commandArray[#commandArray + 1] = {[lamp] = "Off"}
-    commandArray[#commandArray + 1] = {[device] = "Off AFTER 5"}
-  end
-end
-
 
 
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
@@ -101,13 +81,6 @@ end
 if devicechanged["pirHal"] then  
   local functie = lichtHal("lichtHal")
 end
-
-
--- test
-if devicechanged["switchCube"] then 
-  local functie = test("switchCube", "lichtWoonkamer")
-end
-
 
 return commandArray
 
