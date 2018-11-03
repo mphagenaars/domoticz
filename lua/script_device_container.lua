@@ -46,7 +46,11 @@ function lichtUit(lichtknop)
 end
 
 -- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
-
+function dagLicht(lichtknop)
+  if otherdevices["luxDonker"] == "Off" then
+    commandArray[lichtknop] = "Off"
+  end
+end
 
 -- 5) verlichting: licht aan in de hal wanneer er beweging is
 function lichtHal(lamp)
@@ -55,8 +59,6 @@ function lichtHal(lamp)
     commandArray[#commandArray + 1] = {[lamp] = "Off AFTER 450"}
   end
 end
-
-
 
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
@@ -75,9 +77,12 @@ end
 if devicechanged["pirEethoek"] then
   local functie = beweging("pirEethoek", "bewegingWoonkamer")
 end
--- verlichting Zithoek
+-- verlichting Woonkamer
 if devicechanged["bewegingWoonkamer"] then 
   local functie = lichtUit("lichtWoonkamer")
+end
+if devicechanged["luxDonker"] then 
+  local functie = dagLicht("lichtWoonkamer")
 end
 -- verlichting Hal
 if devicechanged["pirHal"] then  
