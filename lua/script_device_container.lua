@@ -11,7 +11,7 @@ local time = os.date("*t")
 -- 1) verlichting: handmatige bediening met xiaomi-buttons
 -- 2) beweging: dummy motionsensor(s) aan zetten
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
--- 4) vervallen
+-- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
 -- 5) verlichting: licht aan in de hal wanneer er beweging is
 
 -- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
@@ -45,7 +45,8 @@ function lichtUit(lichtknop)
   end
 end
 
--- 4) vervallen
+-- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
+
 
 -- 5) verlichting: licht aan in de hal wanneer er beweging is
 function lichtHal(lamp)
@@ -54,6 +55,7 @@ function lichtHal(lamp)
     commandArray[#commandArray + 1] = {[lamp] = "Off AFTER 450"}
   end
 end
+
 
 
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
@@ -83,6 +85,3 @@ if devicechanged["pirHal"] then
 end
 
 return commandArray
-
-
-
