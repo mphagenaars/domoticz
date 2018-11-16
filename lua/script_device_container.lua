@@ -40,7 +40,7 @@ end
 
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
 function lichtUit(lichtknop)
-  if otherdevices["bewegingZithoek"] == "Off" then
+  if otherdevices["bewegingWoonkamer"] == "Off" then
     commandArray[lichtknop] = "Off"
   end
 end

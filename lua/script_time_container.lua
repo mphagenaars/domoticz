@@ -4,7 +4,7 @@
 
 commandArray = {}
 
--- 1. bewegingsdetectie zithoek
+-- 1. bewegingsdetectie woonkamer
 no_motion_minutes = tonumber(uservariables["nomotionCounterWoonkamer"])
  
 if (otherdevices["pirZithoek"] == "Off" and otherdevices["pirEethoek"] == "Off") then
@@ -15,7 +15,7 @@ end
 
 commandArray["Variable:nomotionCounterWoonkamer"] = tostring(no_motion_minutes)
 
-if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
+if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 1 then
    commandArray["bewegingWoonkamer"] = "Off"
 end
 
