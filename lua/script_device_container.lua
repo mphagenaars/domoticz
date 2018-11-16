@@ -52,7 +52,7 @@ function dagLicht(lichtknop)
   end
 end
 
--- 5) verlichting: licht aan in de hal wanneer er beweging is
+-- 5) verlichting: licht aan in de hal schakelen op beweging
 function lichtHal(lamp)
   if otherdevices["pirHal"] == "On" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
@@ -60,7 +60,7 @@ function lichtHal(lamp)
   end
 end
 
--- 6) verlichting: licht op de vliering aan wanneer er beweging is
+-- 6) verlichting: licht op de vliering boven de garage schakelen op beweging
 function lichtVliering(lamp)
   if otherdevices["bewegingVliering"] == "On" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
@@ -90,7 +90,7 @@ end
 if devicechanged["bewegingWoonkamer"] then 
   local functie = lichtUit("lichtWoonkamer")
 end
--- als het licht (lux) de grenswaarde passeert
+-- verlichting aanpassen wanneer de hoeveelheid daglicht (lux) een grenswaarde passeert
 if devicechanged["luxDonker"] then 
   local functie = dagLicht("lichtWoonkamer")
 end
