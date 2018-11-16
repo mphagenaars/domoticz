@@ -60,6 +60,15 @@ function lichtHal(lamp)
   end
 end
 
+-- 6) verlichting: licht op de vliering aan wanneer er beweging is
+function lichtVliering(lamp)
+  if otherdevices["bewegingVliering"] == "On" then
+    commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
+  elseif otherdevices["bewegingVliering"] == "Off" then
+    commandArray[#commandArray + 1] = {[lamp] = "Off"}
+  end
+end
+
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
 -- xiaomi knoppen ivm bedienen van het licht
@@ -69,24 +78,32 @@ end
 if devicechanged["xiaomiSwitchMatthijs"] then 
   local functie = lichtXiaomi("xiaomiSwitchMatthijs")
 end
--- beweging zithoek
+-- als er beweging in de zithoek gesignaleerd wordt
 if devicechanged["pirZithoek"] then
   local functie = beweging("pirZithoek", "bewegingWoonkamer")
 end
--- beweging eethoek
+-- als er beweging in de eethoek gesignaleerd wordt
 if devicechanged["pirEethoek"] then
   local functie = beweging("pirEethoek", "bewegingWoonkamer")
 end
--- verlichting Woonkamer
+-- als de aanwezigheidsdetectie in de woonkamer verandert
 if devicechanged["bewegingWoonkamer"] then 
   local functie = lichtUit("lichtWoonkamer")
 end
+-- als het licht (lux) de grenswaarde passeert
 if devicechanged["luxDonker"] then 
   local functie = dagLicht("lichtWoonkamer")
 end
--- verlichting Hal
+-- als er beweging is in de hal
 if devicechanged["pirHal"] then  
   local functie = lichtHal("lichtHal")
+end
+-- als er beweging is op de vliering
+if devicechanged["pirVliering"] == "On" then 
+  commandArray["bewegingVliering"] = "On"
+end
+if devicechanged["bewegingVliering"] then  
+  local functie = lichtVliering("lichtVliering")
 end
 
 return commandArray
