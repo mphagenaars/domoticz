@@ -8,11 +8,12 @@ local time = os.date("*t")
 
 -- FUNCTIES DEFINIEREN
 -- index
--- 1) verlichting: handmatige bediening met xiaomi-buttons
+-- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
 -- 2) beweging: dummy motionsensor(s) aan zetten
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
 -- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
--- 5) verlichting: licht aan in de hal wanneer er beweging is
+-- 5) verlichting: licht aan in de hal schakelen op beweging
+-- 6) verlichting: licht op de vliering boven de garage schakelen op beweging
 
 -- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
 function lichtXiaomi(xiaomiSwitch)
@@ -34,21 +35,21 @@ end
 -- 2) beweging: dummy motionsensor(s) aan zetten
 function beweging(pir,sensor)
   if otherdevices[pir] == "On" then
-    commandArray[sensor] = "On"
+    if otherdevices[sensor] == "Off" then commandArray[sensor] = "On" end
   end
 end
 
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
 function lichtUit(lichtknop)
   if otherdevices["bewegingWoonkamer"] == "Off" then
-    commandArray[lichtknop] = "Off"
+    if otherdevices[lichtknop] == "On" then commandArray[lichtknop] = "Off" end
   end
 end
 
 -- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
 function dagLicht(lichtknop)
   if otherdevices["luxDonker"] == "Off" then
-    commandArray[lichtknop] = "Off"
+    if otherdevices[lichtknop] == "On" then commandArray[lichtknop] = "Off" end
   end
 end
 

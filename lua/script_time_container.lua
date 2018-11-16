@@ -15,7 +15,7 @@ end
 
 commandArray["Variable:nomotionCounterWoonkamer"] = tostring(no_motion_minutes)
 
-if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 1 then
+if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
    commandArray["bewegingWoonkamer"] = "Off"
 end
 
