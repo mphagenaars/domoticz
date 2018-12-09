@@ -42,14 +42,14 @@ end
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
 function lichtUit(lichtknop)
   if otherdevices["bewegingWoonkamer"] == "Off" then
-    if otherdevices[lichtknop] == "On" then commandArray[lichtknop] = "Off" end
+    if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
   end
 end
 
 -- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
 function dagLicht(lichtknop)
   if otherdevices["luxDonker"] == "Off" then
-    if otherdevices[lichtknop] == "On" then commandArray[lichtknop] = "Off" end
+    if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
   end
 end
 
