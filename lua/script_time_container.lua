@@ -69,10 +69,11 @@ elseif (time.hour == 20 and time.min == 00) then
    commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
    commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
 end
+
 if timeofday['Daytime'] == true and otherdevices["lichtOverloop"] ~= "Off" then 
-   commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}  
+   commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
 end
 
 return commandArray
