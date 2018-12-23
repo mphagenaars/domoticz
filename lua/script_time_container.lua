@@ -60,14 +60,15 @@ end
 
 
 -- 4. verlichting op de overloop aansturen (tot PIRS binnen zijn voorlopig tijdschakelaar gebruiken)
-if (time.hour == 18 and time.min == 30) then 
+if (time.hour == 17 and time.min == 00) then 
+   --commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
    commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
-   commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
+
 elseif (time.hour == 20 and time.min == 00) then 
+   --commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
    commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
-   commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
 end
 
 if timeofday['Daytime'] == true and otherdevices["lichtOverloop"] ~= "Off" then 
