@@ -59,12 +59,19 @@ if otherdevices["bewegingVliering"] == "On" and no_motion_minutes > 10 then
 end
 
 
--- 4. verlichting op de overloop aansturen (tot PIRS binnen zijn voorlopig tijdschakelaar gebruiken)
+-- 4. dummy device voor bepalen dag/nacht
+if timeofday["Nighttime"] == true and otherdevices["nightTime"] == "Off" then 
+   commandArray["nightTime"] = "On"
+elseif timeofday["Nighttime"] == false and otherdevices["nightTime"] == "On" then
+   commandArray["nightTime"] = "Off"  
+end
+
+
+-- 5. verlichting op de overloop aansturen (tot PIRS binnen zijn voorlopig tijdschakelaar gebruiken)
 if (time.hour == 17 and time.min == 00) then 
    --commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
    commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
-
 elseif (time.hour == 20 and time.min == 00) then 
    --commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
