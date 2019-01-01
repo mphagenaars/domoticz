@@ -49,7 +49,7 @@ end
 -- 4) verlichting: generieke aan/uit schakelaar voor verlichting
 function lichtSchakelaar(trigger,lamp)
   if otherdevices[trigger] == "On" then
-    if otherdevices[lamp] = "Off" then commandArray[lamp] = "On" end
+    if otherdevices[lamp] == "Off" then commandArray[lamp] = "On" end
   elseif otherdevices[trigger] == "Off" then
     if otherdevices[lamp] ~= "Off" then commandArray[lamp] = "Off" end
   end
