@@ -46,10 +46,12 @@ function lichtUit(lichtknop)
   end
 end
 
--- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
-function dagLicht(lichtknop)
-  if otherdevices["luxDonker"] == "Off" then
-    if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
+-- 4) verlichting: generieke aan/uit schakelaar voor verlichting
+function lichtSchakelaar(trigger,lamp)
+  if otherdevices[trigger] == "On" then
+    if otherdevices[lamp] = "Off" then commandArray[lamp] = "On" end
+  elseif otherdevices[trigger] == "Off" then
+    if otherdevices[lamp] ~= "Off" then commandArray[lamp] = "Off" end
   end
 end
 
@@ -91,9 +93,9 @@ end
 if devicechanged["bewegingWoonkamer"] then 
   local functie = lichtUit("lichtWoonkamer")
 end
--- verlichting aanpassen wanneer de hoeveelheid daglicht (lux) een grenswaarde passeert
-if devicechanged["luxDonker"] then 
-  local functie = dagLicht("lichtWoonkamer")
+-- licht in het portiek automatisch aan en uit schakelen
+if devicechanged["nightTime"] then 
+  local functie = lichtSchakelaar("nightTime", "lichtPortiek")
 end
 -- als er beweging is in de hal
 if devicechanged["pirHal"] then  
