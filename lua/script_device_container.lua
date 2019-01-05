@@ -89,6 +89,13 @@ end
 if devicechanged["pirEethoek"] then
   local functie = beweging("pirEethoek", "bewegingWoonkamer")
 end
+-- als er bewging op de overloop gesignaleerd wordt
+if devicechanged["pirOverloop1"] then
+  local functie = beweging("pirOverloop1", "bewegingOverloop")
+end
+if devicechanged["pirOverloop2"] then
+  local functie = beweging("pirOverloop2", "bewegingOverloop")
+end
 -- als de aanwezigheidsdetectie in de woonkamer verandert
 if devicechanged["bewegingWoonkamer"] then 
   local functie = lichtUit("lichtWoonkamer")

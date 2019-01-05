@@ -67,7 +67,23 @@ elseif timeofday["Nighttime"] == false and otherdevices["nightTime"] == "On" the
 end
 
 
--- 5. verlichting op de overloop aansturen (tot PIRS binnen zijn voorlopig tijdschakelaar gebruiken)
+-- 5. bewegingsdetectie woonkamer
+no_motion_minutes = tonumber(uservariables["nomotionCounterOverloop"])
+ 
+if (otherdevices["pirOverloop1"] == "Off" and otherdevices["pirOverloop2"] == "Off") then
+   no_motion_minutes = no_motion_minutes + 1
+else 
+   no_motion_minutes = 0	
+end 
+
+commandArray["Variable:nomotionCounterOverloop"] = tostring(no_motion_minutes)
+
+if otherdevices["bewegingOverloop"] == "On" and no_motion_minutes > 5 then
+   commandArray["bewegingOverloop"] = "Off"
+end
+
+
+-- 6. verlichting op de overloop aansturen (tot PIRS binnen zijn voorlopig tijdschakelaar gebruiken)
 if (time.hour == 17 and time.min == 00) then 
    --commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
    commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
