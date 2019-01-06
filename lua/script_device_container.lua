@@ -6,6 +6,32 @@
 -- VARIABELEN DEFINIEREN
 local time = os.date("*t")
 
+function timebetween(s,e)
+	timenow = os.date("*t")
+	year = timenow.year
+	month = timenow.month
+	day = timenow.day
+	s = s .. ":00" 
+	e = e .. ":00"
+	shour = string.sub(s, 1, 2)
+	sminutes = string.sub(s, 4, 5)
+	sseconds = string.sub(s, 7, 8)
+	ehour = string.sub(e, 1, 2)
+	eminutes = string.sub(e, 4, 5)
+	eseconds = string.sub(e, 7, 8)
+	t1 = os.time()
+	t2 = os.time{year=year, month=month, day=day, hour=shour, min=sminutes, sec=sseconds}
+	t3 = os.time{year=year, month=month, day=day, hour=ehour, min=eminutes, sec=eseconds}
+	sdifference = os.difftime (t1, t2)
+	edifference = os.difftime (t1, t3)
+	isbetween = false
+	if sdifference >= 0 and edifference <= 0 then
+		isbetween = true
+	end
+	return isbetween
+end
+
+
 -- FUNCTIES DEFINIEREN
 -- index
 -- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
@@ -34,9 +60,7 @@ end
 
 -- 2) beweging: dummy motionsensor(s) aan zetten
 function beweging(pir,sensor)
-  if otherdevices[pir] == "On" then
-    if otherdevices[sensor] == "Off" then commandArray[sensor] = "On" end
-  end
+  if otherdevices[pir] == "On" then commandArray[sensor] = "On" end
 end
 
 -- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
@@ -69,6 +93,20 @@ function lichtVliering(lamp)
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
   elseif otherdevices["bewegingVliering"] == "Off" then
     commandArray[#commandArray + 1] = {[lamp] = "Off"}
+  end
+end
+
+-- 7) verlichting op de overloop regelen
+function lichtOverloop(lamp)
+  if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
+          timebetween ("20:00:00","22:59:59") then
+    commandArray["lichtOverloopOntspannen"] = "On"
+  elseif otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
+          timebetween ("06:30:00","10:59:59") then
+    commandArray["lichtOverloopOntspannen"] = "On"
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "On" and 
+          timebetween ("20:00:00","06:59:59") then
+    commandArray["lichtOverloopNachtlampje"] = "On" 
   end
 end
 
@@ -114,6 +152,10 @@ if devicechanged["pirVliering"] == "On" then
 end
 if devicechanged["bewegingVliering"] then  
   local functie = lichtVliering("lichtVliering")
+end
+-- als er beweging is op de overloop
+if devicechanged["bewegingOverloop"] then
+  local functie = lichtOverloop("lichtOverloop")
 end
 
 return commandArray
