@@ -31,7 +31,6 @@ function timebetween(s,e)
 	return isbetween
 end
 
-
 -- FUNCTIES DEFINIEREN
 -- index
 -- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
@@ -98,16 +97,17 @@ end
 
 -- 7) verlichting op de overloop regelen
 function lichtOverloop(lamp)
-  if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
-          timebetween ("20:00:00","22:59:59") then
-    commandArray["lichtOverloopOntspannen"] = "On"
+  if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and
+          timebetween ("14:00:00","22:59:59") then
+    commandArray["lichtOverloopOntspannen"] = "On FOR 10"
   elseif otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
           timebetween ("06:30:00","10:59:59") then
-    commandArray["lichtOverloopOntspannen"] = "On"
-  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "On" and 
-          timebetween ("20:00:00","06:59:59") then
-    commandArray["lichtOverloopNachtlampje"] = "On" 
-  end
+    commandArray["lichtOverloopOntspannen"] = "On FOR 10"
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "On" then
+    commandArray["lichtOverloopNachtlampje"] = "On FOR 10" 
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "Off" then
+    commandArray["lichtOverloop"] = "Off"
+  end 
 end
 
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
