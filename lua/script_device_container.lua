@@ -49,11 +49,21 @@ function lichtXiaomi(xiaomiSwitch)
     commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
     commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
   elseif otherdevices[xiaomiSwitch] == "Long Click" then 
-    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
-    commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
-  elseif otherdevices[xiaomiSwitch] == "Long Click Release" then 
-    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
-    commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
+    if otherdevices["lichtSlaapkamer"] == "Off" then 
+      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
+      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
+    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
+      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
+      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
+    end      
+--  elseif otherdevices[xiaomiSwitch] == "Long Click Release" then 
+--    if otherdevices["lichtSlaapkamer"] == "Off" then 
+--      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
+--      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
+--    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
+--      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
+--      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
+--    end   
   end
 end
 
