@@ -125,7 +125,7 @@ function lichtSlaapkamer()
   if otherdevices["switchCube"] == "shake_air" then
     if otherdevices["lichtSlaapkamer"] == "Off" then
       commandArray["lichtSlaapkamerOntspannen"] = "On"
-    else if otherdevices["lichtSlaapkamer"] ~= "Off" then
+    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
       commandArray["lichtSlaapkamer"] = "Off"
     end
   end

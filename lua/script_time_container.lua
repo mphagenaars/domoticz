@@ -78,7 +78,7 @@ end
 
 commandArray["Variable:nomotionCounterOverloop"] = tostring(no_motion_minutes)
 
-if otherdevices["bewegingOverloop"] == "On" and no_motion_minutes > 5 then
+if otherdevices["bewegingOverloop"] == "On" and no_motion_minutes > 10 then
    commandArray["bewegingOverloop"] = "Off"
 end
 
