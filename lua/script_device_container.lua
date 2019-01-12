@@ -120,6 +120,17 @@ function lichtOverloop(lamp)
   end 
 end
 
+-- verlichting: slaapkamer
+function lichtSlaapkamer()
+  if otherdevices["switchCube"] == "shake_air" then
+    if otherdevices["lichtSlaapkamer"] == "Off" then
+      commandArray["lichtSlaapkamerOntspannen"] = "On"
+    else if otherdevices["lichtSlaapkamer"] ~= "Off" then
+      commandArray["lichtSlaapkamer"] = "Off"
+    end
+  end
+end
+
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
 -- xiaomi knoppen ivm bedienen van het licht
@@ -166,6 +177,10 @@ end
 -- als er beweging is op de overloop
 if devicechanged["bewegingOverloop"] then
   local functie = lichtOverloop("lichtOverloop")
+end
+-- xiaomi cube gebruiken om licht op de slaapkamer te schakelen
+if devicechanged["switchCube"] then
+  local functie = lichtSlaapkamer()
 end
 
 return commandArray
