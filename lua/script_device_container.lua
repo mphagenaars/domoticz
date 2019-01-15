@@ -131,14 +131,23 @@ function lichtSlaapkamer()
   end
 end
 
+-- verlichting: slaapkamer bedienen met xiaomi wireless switch
+function switchSlaapkamer2()
+  if otherdevices ["lichtSlaapkamer"] == "Off" then 
+    commandArray["lichtSlaapkamerOntspannen"] = "On"
+  elseif otherdevices["lichtSlaapamer"] ~= "Off" then 
+    commandArray["lichtSlaapkamer"] = "Off"
+  end
+end
+
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
 -- xiaomi knoppen ivm bedienen van het licht
-if devicechanged["xiaomiSwitchJasmijn"] then 
-  local functie = lichtXiaomi("xiaomiSwitchJasmijn")
+if devicechanged["switchMultiHal"] then 
+  local functie = lichtXiaomi("switchMultiHal")
 end  
-if devicechanged["xiaomiSwitchMatthijs"] then 
-  local functie = lichtXiaomi("xiaomiSwitchMatthijs")
+if devicechanged["switchSlaapkamerMulti1"] then 
+  local functie = lichtXiaomi("switchSlaapkamerMulti1")
 end
 -- als er beweging in de zithoek gesignaleerd wordt
 if devicechanged["pirZithoek"] then
@@ -181,6 +190,10 @@ end
 -- xiaomi cube gebruiken om licht op de slaapkamer te schakelen
 if devicechanged["switchCube"] then
   local functie = lichtSlaapkamer()
+end
+-- xiaomi wireless switch gebruiken om licht op de slaapkamer te schakalen
+if devicechanged["switchSlaapkamerUni"] then 
+  local functie = switchSlaapkamer2()
 end
 
 return commandArray
