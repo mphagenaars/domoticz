@@ -1,5 +1,4 @@
--- DOMOTICZ
--- time based script container 
+-- SCRIPT_TIME_CONTAINER.LUA
 
 -- VARIABELEN DEFINIEREN
 local time = os.date("*t")

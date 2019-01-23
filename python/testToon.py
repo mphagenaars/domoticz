@@ -17,10 +17,18 @@ toonGas = 104
 # debug?
 debug = 0
 
-# get thermostat info
+# get thermostat info from Toon
 toon_url = 'http://%s/happ_thermstat?action=getThermostatInfo' % toon_ip
 response = requests.get(toon_url)
 thermostatInfo = json.loads(response.text)
+
+# get thermostat info from Domoticz to match toonstate & selector switch settings
+domo_url = 'http://%s/json.htm?type=devices&rid=108' % domoticz_ip
+response = requests.get(domo_url)
+checkDomo = json.loads(response.text)
+for x in checkDomo['result']:
+    level = x['Level']
+
 
 # only proceed if Toon is online and ok
 if thermostatInfo['result'] == "ok":
@@ -50,6 +58,7 @@ if thermostatInfo['result'] == "ok":
     else: 
         cons = round(p1Info['dev_2.5']['profileInfo']['CurrentElectricityFlow'])
     gasUsage = round(p1Info['dev_2.1']['profileInfo']['CurrentGasQuantity'])
+    #print(str(p1Info))
 
     # updating Domoticz 
     # temp
@@ -63,7 +72,8 @@ if thermostatInfo['result'] == "ok":
     if debug == 1: print('update setpoint: %s' % json.loads(resp.text)['status'])
     # selector / programma
     data = {'type':'command', 'param':'switchlight', 'idx':'%s' % toonSelector, 'switchcmd':'Set Level', 'level':state}
-    resp = requests.get(url=domoticz_url, params=data)
+    if level != state:
+        resp = requests.get(url=domoticz_url, params=data)
     if debug == 1: print('update programma: %s' % json.loads(resp.text)['status'])
     # p1: power
     sval = '{};{};0;0;{};0'.format(powerUsage1,powerUsage2,cons)
