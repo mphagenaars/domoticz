@@ -6,6 +6,13 @@
 -- VARIABELEN DEFINIEREN
 local time = os.date("*t")
 
+
+-- USE FUNCTIONS FROM SEPARATE FILE
+-- sudo ln -s /home/matthijs/domoticz/scripts/lua/functions.lua /usr/local/lib/lua/5.2/functions.lua
+funky = require("functions")
+--functions = (loadfile "/home/matthijs/domoticz/scripts/lua/functions.lua")()
+
+
 function timebetween(s,e)
 	timenow = os.date("*t")
 	year = timenow.year
@@ -194,6 +201,10 @@ end
 -- xiaomi wireless switch gebruiken om licht op de slaapkamer te schakalen
 if devicechanged["switchSlaapkamerUni"] then 
   local functie = switchSlaapkamer2()
+end
+
+if devicechanged["testSwitch"] then
+  local functie = test("dit is een test")
 end
 
 return commandArray
