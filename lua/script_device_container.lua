@@ -1,4 +1,4 @@
--- script_device_container.lua
+-- SCRIPT_DEVICE_CONTAINER.LUA
 
 -- DOMOTICZ
 -- device based script container
@@ -7,155 +7,129 @@
 local time = os.date("*t")
 
 
--- USE FUNCTIONS FROM SEPARATE FILE
--- sudo ln -s /home/matthijs/domoticz/scripts/lua/functions.lua /usr/local/lib/lua/5.2/functions.lua
-funky = require("functions")
---functions = (loadfile "/home/matthijs/domoticz/scripts/lua/functions.lua")()
+-- functies ophalen uit extern lua-script
+functies = require("functions")
 
+-- huisautoamtisering regelen dmv functies
+-- index / triggers
+-- 0) generieke functies --> functions.lua
+-- 1) bewegingWoonkamer --> idx 48
+-- 2) bewegingOverloop --> idx 156
+-- 3) bewegingVliering --> idx 99
+-- 4) pirHal --> idx 
+-- 5) switchHal --> idx 31
+-- 6) switchSlaapkamerMulti --> idx 35
+-- 7) switchSlaapkamerUni --> idx 182
+-- 8) switchSlaapkamerCube --> idx 52
 
-function timebetween(s,e)
-	timenow = os.date("*t")
-	year = timenow.year
-	month = timenow.month
-	day = timenow.day
-	s = s .. ":00" 
-	e = e .. ":00"
-	shour = string.sub(s, 1, 2)
-	sminutes = string.sub(s, 4, 5)
-	sseconds = string.sub(s, 7, 8)
-	ehour = string.sub(e, 1, 2)
-	eminutes = string.sub(e, 4, 5)
-	eseconds = string.sub(e, 7, 8)
-	t1 = os.time()
-	t2 = os.time{year=year, month=month, day=day, hour=shour, min=sminutes, sec=sseconds}
-	t3 = os.time{year=year, month=month, day=day, hour=ehour, min=eminutes, sec=eseconds}
-	sdifference = os.difftime (t1, t2)
-	edifference = os.difftime (t1, t3)
-	isbetween = false
-	if sdifference >= 0 and edifference <= 0 then
-		isbetween = true
-	end
-	return isbetween
-end
-
--- FUNCTIES DEFINIEREN
--- index
--- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
--- 2) beweging: dummy motionsensor(s) aan zetten
--- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
--- 4) verlichting: verlichting uitschakelen wanneer er genoeg daglicht is
--- 5) verlichting: licht aan in de hal schakelen op beweging
--- 6) verlichting: licht op de vliering boven de garage schakelen op beweging
-
--- 1) handmatig licht aan/uit met Xiaomi schakelaars op de slaapkamer
-function lichtXiaomi(xiaomiSwitch)
-  if otherdevices[xiaomiSwitch] == "Click" then 
-    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "On"}
-    commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
-  elseif otherdevices[xiaomiSwitch] == "Double Click" then 
-    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
-    commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
-  elseif otherdevices[xiaomiSwitch] == "Long Click" then 
-    if otherdevices["lichtSlaapkamer"] == "Off" then 
-      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
-      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
-    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
-      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
-      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
-    end      
---  elseif otherdevices[xiaomiSwitch] == "Long Click Release" then 
---    if otherdevices["lichtSlaapkamer"] == "Off" then 
---      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
---      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
---    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
---      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
---      commandArray[#commandArray + 1] = {[xiaomiSwitch] = "Off AFTER 10"}
---    end   
-  end
-end
-
--- 2) beweging: dummy motionsensor(s) aan zetten
-function beweging(pir,sensor)
-  if otherdevices[pir] == "On" then commandArray[sensor] = "On" end
-end
-
--- 3) verlichting: licht uit wanneer er geen beweging is in de woonkamer
-function lichtUit(lichtknop)
+-- 1) switch(bewegingWoonkamer): licht uit wanneer er geen beweging is in de woonkamer
+function bewegingWoonkamer(lichtknop)
   if otherdevices["bewegingWoonkamer"] == "Off" then
     if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
   end
 end
 
--- 4) verlichting: generieke aan/uit schakelaar voor verlichting
-function lichtSchakelaar(trigger,lamp)
-  if otherdevices[trigger] == "On" then
-    if otherdevices[lamp] == "Off" then commandArray[lamp] = "On" end
-  elseif otherdevices[trigger] == "Off" then
-    if otherdevices[lamp] ~= "Off" then commandArray[lamp] = "Off" end
+-- 2) switch(bewegingOverloop): verlichting op de overloop regelen
+function bewegingOverloop(lamp)
+  -- tot 23:00 uur het licht wat feller 
+  if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and
+    otherdevices_svalues["lichtOverloop"] ~= 57 and tijdvak("14:00:00","22:59:59") then
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off AFTER 10"}
+  -- vanaf 6:30 uur het licht wat feller 
+  elseif otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
+    otherdevices_svalues["lichtOverloop"] ~= 57 and tijdvak("06:30:00","10:59:59") then
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off AFTER 10"}
+  -- als het donker is en er is geen beweging op de overloop dan terug naar een nachtlampje
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "On" and
+    otherdevices_svalues["lichtOverloop"] ~= 1 then
+      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
+      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off AFTER 10"}
+  -- als het licht is en er is geen beweging op de overloop dan kan het licht uit
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "Off" and
+    otherdevices["lichtOverloop"] ~= "Off" then
+      commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
+      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
+  end 
+end
+
+-- 3) switch(bewegingVliering): licht op de vliering boven de garage schakelen op beweging
+function bewegingVliering(lamp)
+  if otherdevices["bewegingVliering"] == "On" and otherdevices[lamp] == "Off" then
+    commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
+  elseif otherdevices["bewegingVliering"] == "Off" and otherdevices[lamp] ~= "Off" then
+    commandArray[#commandArray + 1] = {[lamp] = "Off"}
   end
 end
 
--- 5) verlichting: licht aan in de hal schakelen op beweging
-function lichtHal(lamp)
+-- 4) switch(pirHal):  licht in de hal schakelen op beweging
+function pirHal(lamp)
   if otherdevices["pirHal"] == "On" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
     commandArray[#commandArray + 1] = {[lamp] = "Off AFTER 450"}
   end
 end
 
--- 6) verlichting: licht op de vliering boven de garage schakelen op beweging
-function lichtVliering(lamp)
-  if otherdevices["bewegingVliering"] == "On" then
-    commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
-  elseif otherdevices["bewegingVliering"] == "Off" then
-    commandArray[#commandArray + 1] = {[lamp] = "Off"}
+-- 5) switchHal: handmatig licht aan/uit met schakelaar
+function switchHal(switch)
+  if otherdevices[switch] == "Click" and otherdevices["lichtWoonkamer"] == "Off" then 
+    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "On"}
+    commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
+  elseif otherdevices[switch] == "Double Click" and otherdevices["lichtWoonkamer"] ~= "Off" then 
+    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
+    commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
   end
 end
 
--- 7) verlichting op de overloop regelen
-function lichtOverloop(lamp)
-  if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and
-          timebetween ("14:00:00","22:59:59") then
-    commandArray["lichtOverloopOntspannen"] = "On FOR 10"
-  elseif otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
-          timebetween ("06:30:00","10:59:59") then
-    commandArray["lichtOverloopOntspannen"] = "On FOR 10"
-  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "On" then
-    commandArray["lichtOverloopNachtlampje"] = "On FOR 10" 
-  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "Off" then
-    commandArray["lichtOverloop"] = "Off"
-  end 
-end
-
--- verlichting: slaapkamer
-function lichtSlaapkamer()
-  if otherdevices["switchCube"] == "shake_air" then
-    if otherdevices["lichtSlaapkamer"] == "Off" then
-      commandArray["lichtSlaapkamerOntspannen"] = "On"
-    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
-      commandArray["lichtSlaapkamer"] = "Off"
+-- 6) switchSlaapkamerMulti
+  function switchSlaapkamerMulti(switch)
+    if otherdevices[switch] == "Click" and otherdevices["lichtSlaapkamer"] == "Off" then 
+      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Set Level 57"}
+      commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
+    elseif otherdevices[switch] == "Double Click" and otherdevices["lichtSlaapkamer"] == "Off" then 
+      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Set Level 1"}
+      commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
+    elseif otherdevices[switch] == "Long Click" and otherdevices["lichtSlaapkamer"] ~= "Off" then
+      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
+      commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}    
+    elseif otherdevices[switch] == "Long Click Release" then
+      if otherdevices["lichtWoonkamer"] ~= "Off" then 
+        commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
+        commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
+      end 
     end
   end
-end
 
--- verlichting: slaapkamer bedienen met xiaomi wireless switch
-function switchSlaapkamer2()
+-- 7) switchSlaapkamerUni --> idx 182
+function switchSlaapkamerUni()
   if otherdevices ["lichtSlaapkamer"] == "Off" then 
-    commandArray["lichtSlaapkamerOntspannen"] = "On"
+    commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
+    commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
   elseif otherdevices["lichtSlaapamer"] ~= "Off" then 
     commandArray["lichtSlaapkamer"] = "Off"
   end
 end
 
+-- 8) switchSlaapkamerCube --> idx 52
+function switchSlaapkamerCube()
+  if otherdevices["switchSlaapkamerCube"] == "shake_air" then
+    if otherdevices["lichtSlaapkamer"] == "Off" then
+      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
+      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
+    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
+      commandArray["lichtSlaapkamer"] = "Off"
+    end
+  end
+  commandArray["switchSlaapkamerCube"] = "Off"
+end
+
+
+
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
--- xiaomi knoppen ivm bedienen van het licht
-if devicechanged["switchMultiHal"] then 
-  local functie = lichtXiaomi("switchMultiHal")
-end  
-if devicechanged["switchSlaapkamerMulti1"] then 
-  local functie = lichtXiaomi("switchSlaapkamerMulti1")
-end
+-- 0) 
 -- als er beweging in de zithoek gesignaleerd wordt
 if devicechanged["pirZithoek"] then
   local functie = beweging("pirZithoek", "bewegingWoonkamer")
@@ -164,47 +138,75 @@ end
 if devicechanged["pirEethoek"] then
   local functie = beweging("pirEethoek", "bewegingWoonkamer")
 end
--- als er bewging op de overloop gesignaleerd wordt
+-- als er beweging op de overloop gesignaleerd wordt
 if devicechanged["pirOverloop1"] then
   local functie = beweging("pirOverloop1", "bewegingOverloop")
 end
 if devicechanged["pirOverloop2"] then
   local functie = beweging("pirOverloop2", "bewegingOverloop")
 end
+-- als er beweging op de vliering gesignaleerd wordt
+if devicechanged["pirVliering"] then
+  local functie = beweging("pirVliering", "bewegingVliering")
+end
+
+-- 1) bewegingWoonkamer
 -- als de aanwezigheidsdetectie in de woonkamer verandert
 if devicechanged["bewegingWoonkamer"] then 
-  local functie = lichtUit("lichtWoonkamer")
+  local functie = bewegingWoonkamer("lichtWoonkamer")
 end
+
+-- 2) bewegingOverloop
+-- als de aanwezigheidsdetectie op de overloop verandert
+if devicechanged["bewegingOverloop"] then
+  local functie = bewegingOverloop("lichtOverloop")
+end
+
+-- 3) bewegingVliering
+-- als er beweging is op de vliering
+if devicechanged["bewegingVliering"] then  
+  local functie = bewegingVliering("lichtVliering")
+end
+
+-- 4) pirHal
+-- als er beweging is in de hal
+if devicechanged["pirHal"] then  
+  local functie = pirHal("lichtHal")
+end
+
+-- 5) switchHal
+-- multifuncionele (xiaomi) schakelaar gebruiken voor het bedienen van het licht in de woonkamer
+if devicechanged["switchHal"] then 
+  local functie = switchHal("switchHal")
+end  
+
+-- 6) switchSlaapkamerMulti
+if devicechanged["switchSlaapkamerMulti"] then 
+  local functie = switchSlaapkamerMulti("switchSlaapkamerMulti1")
+end
+
+-- 7) switchSlaapkamerMulti
+if devicechanged["switchSlaapkamerUni"] then 
+  local functie = switchSlaapkamerUni()
+end
+
+-- 8) switchSlaapkamerCube 
+if devicechanged["switchSlaapkamerCube"] then
+  local functie = switchSlaapkamerCube()
+end
+
+
+
+
+
 -- licht in het portiek automatisch aan en uit schakelen
 if devicechanged["nightTime"] then 
   local functie = lichtSchakelaar("nightTime", "lichtPortiek")
 end
--- als er beweging is in de hal
-if devicechanged["pirHal"] then  
-  local functie = lichtHal("lichtHal")
-end
--- als er beweging is op de vliering
-if devicechanged["pirVliering"] == "On" then 
-  commandArray["bewegingVliering"] = "On"
-end
-if devicechanged["bewegingVliering"] then  
-  local functie = lichtVliering("lichtVliering")
-end
--- als er beweging is op de overloop
-if devicechanged["bewegingOverloop"] then
-  local functie = lichtOverloop("lichtOverloop")
-end
--- xiaomi cube gebruiken om licht op de slaapkamer te schakelen
-if devicechanged["switchCube"] then
-  local functie = lichtSlaapkamer()
-end
--- xiaomi wireless switch gebruiken om licht op de slaapkamer te schakalen
-if devicechanged["switchSlaapkamerUni"] then 
-  local functie = switchSlaapkamer2()
-end
 
+-- test
 if devicechanged["testSwitch"] then
-  local functie = test("dit is een test")
+  print(otherdevices_svalues["lichtOverloop"])
 end
 
 return commandArray
