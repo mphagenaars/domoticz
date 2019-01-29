@@ -49,9 +49,9 @@ function bewegingOverloop(lamp)
   -- als het licht is en er is geen beweging op de overloop dan kan het licht uit
   elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "Off" and
     otherdevices["lichtOverloop"] ~= "Off" then
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
+      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
       commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
-      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
-      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
   end 
 end
 
@@ -194,10 +194,6 @@ end
 if devicechanged["switchSlaapkamerCube"] then
   local functie = switchSlaapkamerCube()
 end
-
-
-
-
 
 -- licht in het portiek automatisch aan en uit schakelen
 if devicechanged["nightTime"] then 
