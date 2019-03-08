@@ -142,8 +142,10 @@ function switchSlaapkamerMuur()
     if otherdevices ["lichtSlaapkamer"] == "Off" then 
       commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
       commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
+      commandArray[#commandArray + 1] = {["switchSlaapkamerMuur"] = "On"}
     elseif otherdevices["lichtSlaapamer"] ~= "Off" then 
-      commandArray["lichtSlaapkamer"] = "Off"
+      commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
+      commandArray[#commandArray + 1] = {["switchSlaapkamerMuur"] = "On"}
     end
   end
 end
