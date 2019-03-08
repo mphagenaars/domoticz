@@ -3,6 +3,12 @@
 -- VARIABELEN DEFINIEREN
 local time = os.date("*t")
 
+-- functies ophalen uit extern lua-script
+local Current_Path = debug.getinfo(1).source:match("@?(.*/)")
+package.path = package.path .. ';' .. Current_Path .. '?.lua'
+require "functions"
+
+
 commandArray = {}
 
 -- 1. bewegingsdetectie woonkamer

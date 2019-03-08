@@ -4,7 +4,8 @@
 # november 2018
 import json, requests, datetime
 
-# instellingen
+# INSTELLINGEN
+# ip
 toon_ip = '192.168.1.211' 
 domoticz_ip = '192.168.1.105:8080'
 # devices (idx)
@@ -13,6 +14,18 @@ toonSetpoint = 106
 toonSelector = 108
 toonPower = 105
 toonGas = 104
+# selector values
+thuis = ['10', '1']
+comfort = ['20', '0']
+slapen = ['30', '2']
+weg = ['40', '3']
+
+# state setpoints
+thuis_temp = 2050
+comfort_temp = 2100
+slapen_temp = 1700
+weg_temp = 1700 
+vakantie_temp = 1700 
 
 # debug?
 debug = 0

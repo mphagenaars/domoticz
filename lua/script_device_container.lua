@@ -8,28 +8,39 @@ local time = os.date("*t")
 
 
 -- functies ophalen uit extern lua-script
-functies = require("functions")
+local Current_Path = debug.getinfo(1).source:match("@?(.*/)")
+package.path = package.path .. ';' .. Current_Path .. '?.lua'
+require "functions"
 
 -- huisautoamtisering regelen dmv functies
 -- index / triggers
--- 0) generieke functies --> functions.lua
--- 1) bewegingWoonkamer --> idx 48
--- 2) bewegingOverloop --> idx 156
--- 3) bewegingVliering --> idx 99
--- 4) pirHal --> idx 
--- 5) switchHal --> idx 31
--- 6) switchSlaapkamerMulti --> idx 35
--- 7) switchSlaapkamerUni --> idx 182
--- 8) switchSlaapkamerCube --> idx 52
+-- 0) generieke functies --> allemaal naar functions.lua
 
--- 1) switch(bewegingWoonkamer): licht uit wanneer er geen beweging is in de woonkamer
+-- 1) FYSIEKE SWITCHES EN SENSORS
+-- 1.1) bewegingWoonkamer --> idx 48
+-- 1.2) bewegingOverloop --> idx 156
+-- 1.3) bewegingVliering --> idx 99
+-- 1.4) pirHal --> idx 
+-- 1.5) switchHal --> idx 31
+-- 1.6) switchSlaapkamerMulti --> idx 35
+-- 1.7) switchSlaapkamerUni --> idx 182
+-- 1.8) switchSlaapkamerCube --> idx 52
+-- 1.9) switchSlaapkamerMuur --> idx 138
+
+-- 2) VIRTUELE SWITCHES / SOFTWARE / APP
+-- 2.1) Toon selector switch
+
+
+
+-- 1) FYSIEKE SWITCHES EN SENSORS
+-- 1.1) switch(bewegingWoonkamer): licht uit wanneer er geen beweging is in de woonkamer
 function bewegingWoonkamer(lichtknop)
   if otherdevices["bewegingWoonkamer"] == "Off" then
     if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
   end
 end
 
--- 2) switch(bewegingOverloop): verlichting op de overloop regelen
+-- 1.2) switch(bewegingOverloop): verlichting op de overloop regelen
 function bewegingOverloop(lamp)
   -- tot 23:00 uur het licht wat feller 
   if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and
@@ -55,7 +66,7 @@ function bewegingOverloop(lamp)
   end 
 end
 
--- 3) switch(bewegingVliering): licht op de vliering boven de garage schakelen op beweging
+-- 1.3) switch(bewegingVliering): licht op de vliering boven de garage schakelen op beweging
 function bewegingVliering(lamp)
   if otherdevices["bewegingVliering"] == "On" and otherdevices[lamp] == "Off" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
@@ -64,7 +75,7 @@ function bewegingVliering(lamp)
   end
 end
 
--- 4) switch(pirHal):  licht in de hal schakelen op beweging
+-- 1.4) switch(pirHal):  licht in de hal schakelen op beweging
 function pirHal(lamp)
   if otherdevices["pirHal"] == "On" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
@@ -72,7 +83,7 @@ function pirHal(lamp)
   end
 end
 
--- 5) switchHal: handmatig licht aan/uit met schakelaar
+-- 1.5) switchHal: handmatig licht aan/uit met schakelaar
 function switchHal(switch)
   if otherdevices[switch] == "Click" and otherdevices["lichtWoonkamer"] == "Off" then 
     commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "On"}
@@ -83,7 +94,7 @@ function switchHal(switch)
   end
 end
 
--- 6) switchSlaapkamerMulti
+-- 1.6) switchSlaapkamerMulti
   function switchSlaapkamerMulti(switch)
     if otherdevices[switch] == "Click" and otherdevices["lichtSlaapkamer"] == "Off" then 
       commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Set Level 57"}
@@ -102,7 +113,7 @@ end
     end
   end
 
--- 7) switchSlaapkamerUni --> idx 182
+-- 1.7) switchSlaapkamerUni --> idx 182
 function switchSlaapkamerUni()
   if otherdevices ["lichtSlaapkamer"] == "Off" then 
     commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
@@ -112,7 +123,7 @@ function switchSlaapkamerUni()
   end
 end
 
--- 8) switchSlaapkamerCube --> idx 52
+-- 1.8) switchSlaapkamerCube --> idx 52
 function switchSlaapkamerCube()
   if otherdevices["switchSlaapkamerCube"] == "shake_air" then
     if otherdevices["lichtSlaapkamer"] == "Off" then
@@ -125,7 +136,17 @@ function switchSlaapkamerCube()
   commandArray["switchSlaapkamerCube"] = "Off"
 end
 
-
+-- 1.9) switchSlaapkamerMuur --> idx 138
+function switchSlaapkamerMuur()
+  if otherdevices["switchSlaapkamerMuur"] == "Off" then
+    if otherdevices ["lichtSlaapkamer"] == "Off" then 
+      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
+      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
+    elseif otherdevices["lichtSlaapamer"] ~= "Off" then 
+      commandArray["lichtSlaapkamer"] = "Off"
+    end
+  end
+end
 
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
@@ -185,7 +206,7 @@ if devicechanged["switchSlaapkamerMulti"] then
   local functie = switchSlaapkamerMulti("switchSlaapkamerMulti1")
 end
 
--- 7) switchSlaapkamerMulti
+-- 7) switchSlaapkamerUni
 if devicechanged["switchSlaapkamerUni"] then 
   local functie = switchSlaapkamerUni()
 end
@@ -193,6 +214,11 @@ end
 -- 8) switchSlaapkamerCube 
 if devicechanged["switchSlaapkamerCube"] then
   local functie = switchSlaapkamerCube()
+end
+
+-- 9) switchSlaapkamerMuur
+if devicechanged["switchSlaapkamerMuur"] then 
+  local functie = switchSlaapkamerMuur()
 end
 
 -- licht in het portiek automatisch aan en uit schakelen
