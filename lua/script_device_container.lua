@@ -96,18 +96,18 @@ end
 
 -- 1.6) switchSlaapkamerMulti
   function switchSlaapkamerMulti(switch)
-    if otherdevices[switch] == "Click" and otherdevices["lichtSlaapkamer"] == "Off" then 
+    if otherdevices[switch] == "Click" and otherdevices_svalues["lichtSlaapkamer"] ~= "57" then
       commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Set Level 57"}
       commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
-    elseif otherdevices[switch] == "Double Click" and otherdevices["lichtSlaapkamer"] == "Off" then 
+    elseif otherdevices[switch] == "Double Click" and otherdevices_svalues["lichtSlaapkamer"] ~= "1" then 
       commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Set Level 1"}
       commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
     elseif otherdevices[switch] == "Long Click" and otherdevices["lichtSlaapkamer"] ~= "Off" then
       commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
       commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}    
     elseif otherdevices[switch] == "Long Click Release" then
-      if otherdevices["lichtWoonkamer"] ~= "Off" then 
-        commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
+      if otherdevices["lichtSlaapkamer"] ~= "Off" then 
+        commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
         commandArray[#commandArray + 1] = {[switch] = "Off AFTER 10"}
       end 
     end
@@ -124,17 +124,17 @@ function switchSlaapkamerUni()
 end
 
 -- 1.8) switchSlaapkamerCube --> idx 52
-function switchSlaapkamerCube()
-  if otherdevices["switchSlaapkamerCube"] == "shake_air" then
-    if otherdevices["lichtSlaapkamer"] == "Off" then
-      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
-      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
-    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
-      commandArray["lichtSlaapkamer"] = "Off"
-    end
-  end
-  commandArray["switchSlaapkamerCube"] = "Off"
-end
+--function switchSlaapkamerCube()
+-- if otherdevices["switchSlaapkamerCube"] == "shake_air" then
+--    if otherdevices["lichtSlaapkamer"] == "Off" then
+--      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
+--      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
+--    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
+--      commandArray["lichtSlaapkamer"] = "Off"
+--    end
+--  end
+--  commandArray["switchSlaapkamerCube"] = "Off"
+--end
 
 -- 1.9) switchSlaapkamerMuur --> idx 138
 function switchSlaapkamerMuur()
@@ -203,9 +203,12 @@ if devicechanged["switchHal"] then
   local functie = switchHal("switchHal")
 end  
 
--- 6) switchSlaapkamerMulti
-if devicechanged["switchSlaapkamerMulti"] then 
-  local functie = switchSlaapkamerMulti("switchSlaapkamerMulti1")
+-- 6) switchSlaapkamerJH / switchSlaapkamerMH
+if devicechanged["switchSlaapkamerJH"] then 
+  local functie = switchSlaapkamerMulti("switchSlaapkamerJH")
+end
+if devicechanged["switchSlaapkamerMH"] then 
+  local functie = switchSlaapkamerMulti("switchSlaapkamerMH")
 end
 
 -- 7) switchSlaapkamerUni
@@ -214,9 +217,9 @@ if devicechanged["switchSlaapkamerUni"] then
 end
 
 -- 8) switchSlaapkamerCube 
-if devicechanged["switchSlaapkamerCube"] then
-  local functie = switchSlaapkamerCube()
-end
+--if devicechanged["switchSlaapkamerCube"] then
+--  local functie = switchSlaapkamerCube()
+--end
 
 -- 9) switchSlaapkamerMuur
 if devicechanged["switchSlaapkamerMuur"] then 
