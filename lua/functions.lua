@@ -1,9 +1,5 @@
 -- GENERIEKE FUNCTIES OM TE GEBRUIKEN IN SCRIPT_DEVICE_CONTAINER & SCRIPT_TIME_CONTAINER
 
--- domoticz zoekt script in /usr/local/lib/lua/5.2/
--- ik bewerk het script in /home/blablabla --> link maken:
--- sudo ln -s /home/matthijs/domoticz/scripts/lua/functions.lua /usr/local/lib/lua/5.2/functions.lua
-
 -- beweging, dummy motionsensor(s) aan zetten
 function beweging(pir,sensor)
   if otherdevices[pir] == "On" then commandArray[sensor] = "On" end

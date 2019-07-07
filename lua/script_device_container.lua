@@ -33,10 +33,14 @@ require "functions"
 
 
 -- 1) FYSIEKE SWITCHES EN SENSORS
--- 1.1) switch(bewegingWoonkamer): licht uit wanneer er geen beweging is in de woonkamer
+-- 1.1) switch(bewegingWoonkamer): 
+--        a) licht uit wanneer er geen beweging is in de woonkamer
+--        b) licht aan wanneer het donker is en er iemand in de kamer is
 function bewegingWoonkamer(lichtknop)
   if otherdevices["bewegingWoonkamer"] == "Off" then
     if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
+  elseif otherdevices["bewegingWoonkamer"] == "On" and otherdevices["nightTime"] == "On" then
+    if otherdevices[lichtknop] == "Off" then commandArray[lichtknop] = "On" end
   end
 end
 

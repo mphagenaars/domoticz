@@ -26,12 +26,35 @@ if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
    commandArray["bewegingWoonkamer"] = "Off"
 end
 
--- 2. dummy device voor bepalen dag/nacht
+-- 2a. dummy device voor bepalen dag/nacht
 if timeofday["Nighttime"] == true and otherdevices["nightTime"] == "Off" then 
    commandArray["nightTime"] = "On"
 elseif timeofday["Nighttime"] == false and otherdevices["nightTime"] == "On" then
    commandArray["nightTime"] = "Off"  
 end
+
+-- 2b. dummy device gebaseerd op LUX metingen
+schemerMinuten = tonumber(uservariables['schemerCounter'])
+lichtMinuten = tonumber(uservariables['lichtCounter'])
+lux = tonumber(otherdevices_svalues['luxSerre'])
+
+if lux < 200 then 
+   schemerMinuten = schemerMinuten + 1
+   lichtMinuten = 0
+   if schemerMinuten > 5 and otherdevices['schemerSensor'] == 'On' then 
+      commandArray['schemerSensor']='Off'
+   end
+else 
+   schemerMinuten = 0
+   lichtMinuten = lichtMinuten + 1
+   if lichtMinuten > 5 and otherdevices['schemerSensor'] == 'Off' then 
+      commandArray['schemerSensor']='On'
+   end
+end
+
+commandArray['Variable:schemerCounter'] = tostring(schemerMinuten)
+commandArray['Variable:lichtCounter'] = tostring(lichtMinuten)
+
 
 -- 3. bewegingsdetectie Vliering
 no_motion_minutes = tonumber(uservariables["nomotionCounterVliering"])
