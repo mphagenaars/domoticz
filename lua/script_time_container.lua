@@ -38,17 +38,17 @@ schemerMinuten = tonumber(uservariables['schemerCounter'])
 lichtMinuten = tonumber(uservariables['lichtCounter'])
 lux = tonumber(otherdevices_svalues['luxSerre'])
 
-if lux < 200 then 
+if lux < 400 then 
    schemerMinuten = schemerMinuten + 1
    lichtMinuten = 0
-   if schemerMinuten > 5 and otherdevices['schemerSensor'] == 'On' then 
-      commandArray['schemerSensor']='Off'
+   if schemerMinuten > 5 and otherdevices['schemerSensor'] == 'Off' then 
+      commandArray['schemerSensor']='On'
    end
 else 
    schemerMinuten = 0
    lichtMinuten = lichtMinuten + 1
-   if lichtMinuten > 5 and otherdevices['schemerSensor'] == 'Off' then 
-      commandArray['schemerSensor']='On'
+   if lichtMinuten > 5 and otherdevices['schemerSensor'] == 'On' then 
+      commandArray['schemerSensor']='Off'
    end
 end
 
