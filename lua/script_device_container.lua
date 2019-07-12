@@ -39,7 +39,7 @@ require "functions"
 function bewegingWoonkamer(lichtknop)
   if otherdevices["bewegingWoonkamer"] == "Off" then
     if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
-  elseif otherdevices["bewegingWoonkamer"] == "On" and otherdevices["nightTime"] == "On" then
+  elseif otherdevices["bewegingWoonkamer"] == "On" and otherdevices["schemerSensor"] == "On" then
     if otherdevices[lichtknop] == "Off" then commandArray[lichtknop] = "On" end
   end
 end
@@ -47,22 +47,22 @@ end
 -- 1.2) switch(bewegingOverloop): verlichting op de overloop regelen
 function bewegingOverloop(lamp)
   -- tot 23:00 uur het licht wat feller 
-  if otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and
+  if otherdevices["bewegingOverloop"] == "On" and otherdevices["schemerSensor"] == "On" and
     otherdevices_svalues["lichtOverloop"] ~= 57 and tijdvak("14:00:00","22:59:59") then
       commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
       commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off AFTER 10"}
   -- vanaf 6:30 uur het licht wat feller 
-  elseif otherdevices["bewegingOverloop"] == "On" and otherdevices["nightTime"] == "On" and 
+  elseif otherdevices["bewegingOverloop"] == "On" and otherdevices["schemerSensor"] == "On" and 
     otherdevices_svalues["lichtOverloop"] ~= 57 and tijdvak("06:30:00","10:59:59") then
       commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
       commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off AFTER 10"}
   -- als het donker is en er is geen beweging op de overloop dan terug naar een nachtlampje
-  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "On" and
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["schemerSensor"] == "On" and
     otherdevices_svalues["lichtOverloop"] ~= 1 then
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off AFTER 10"}
   -- als het licht is en er is geen beweging op de overloop dan kan het licht uit
-  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["nightTime"] == "Off" and
+  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["schemerSensor"] == "Off" and
     otherdevices["lichtOverloop"] ~= "Off" then
       commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
@@ -231,8 +231,8 @@ if devicechanged["switchSlaapkamerMuur"] then
 end
 
 -- licht in het portiek automatisch aan en uit schakelen
-if devicechanged["nightTime"] then 
-  local functie = lichtSchakelaar("nightTime", "lichtPortiek")
+if devicechanged["schemerSensor"] then 
+  local functie = lichtSchakelaar("schemerSensor", "lichtPortiek")
 end
 
 -- test

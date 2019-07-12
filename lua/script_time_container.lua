@@ -27,9 +27,9 @@ if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
 end
 
 -- 2a. dummy device voor bepalen dag/nacht
-if timeofday["Nighttime"] == true and otherdevices["nightTime"] == "Off" then 
+if timeofday["nightTime"] == true and otherdevices["nightTime"] == "Off" then 
    commandArray["nightTime"] = "On"
-elseif timeofday["Nighttime"] == false and otherdevices["nightTime"] == "On" then
+elseif timeofday["nightTime"] == false and otherdevices["nightTime"] == "On" then
    commandArray["nightTime"] = "Off"  
 end
 
