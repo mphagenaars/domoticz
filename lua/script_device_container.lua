@@ -26,7 +26,7 @@ require "functions"
 -- 1.007) switchSlaapkamerUni --> idx 182
 -- 1.008) ..vervallen..
 -- 1.009) switchSlaapkamerMuur --> idx 138
--- 1.010) Google Chromecast Home Cinema --> idx 376
+-- 1.010) google chromecast --> idx 373 & 376
 
 -- 2) VIRTUELE SWITCHES / SOFTWARE / APP
 -- 2.1) Toon selector switch
@@ -131,8 +131,6 @@ function switchSlaapkamerUni()
   end
 end
 
-
-
 -- 1.009) switchSlaapkamerMuur --> idx 138
 function switchSlaapkamerMuur()
   if otherdevices["switchSlaapkamerMuur"] == "Off" then
@@ -147,7 +145,7 @@ function switchSlaapkamerMuur()
   end
 end
 
--- 1.010) Google Chromecast Home Cinema --> idx 376
+-- 1.010) google chromecast --> idx 373 & 376
 function googleCast(status, volume)
   if otherdevices[status] ~= "Sleeping" and 
         (otherdevices["versterkerPower"] ~= "On" or otherdevices["versterkerInput"] ~= "STRM BOX")  then
