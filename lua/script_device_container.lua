@@ -12,28 +12,32 @@ local Current_Path = debug.getinfo(1).source:match("@?(.*/)")
 package.path = package.path .. ';' .. Current_Path .. '?.lua'
 require "functions"
 
--- huisautoamtisering regelen dmv functies
--- index / triggers
+-------------------------------------------------------------------------------------------------------------------
+-- INDEX
 -- 0) generieke functies --> allemaal naar functions.lua
 
 -- 1) FYSIEKE SWITCHES EN SENSORS
--- 1.1) bewegingWoonkamer --> idx 48
--- 1.2) bewegingOverloop --> idx 156
--- 1.3) bewegingVliering --> idx 99
--- 1.4) pirHal --> idx 
--- 1.5) switchHal --> idx 31
--- 1.6) switchSlaapkamerMulti --> idx 35
--- 1.7) switchSlaapkamerUni --> idx 182
--- 1.8) switchSlaapkamerCube --> idx 52
--- 1.9) switchSlaapkamerMuur --> idx 138
+-- 1.001) bewegingWoonkamer --> idx 48
+-- 1.002) bewegingOverloop --> idx 156
+-- 1.003) bewegingVliering --> idx 99
+-- 1.004) pirHal --> idx 54
+-- 1.005) switchHal --> idx 31
+-- 1.006) switchSlaapkamerMulti --> idx 35
+-- 1.007) switchSlaapkamerUni --> idx 182
+-- 1.008) ..vervallen..
+-- 1.009) switchSlaapkamerMuur --> idx 138
+-- 1.010) Google Chromecast Home Cinema --> idx 376
 
 -- 2) VIRTUELE SWITCHES / SOFTWARE / APP
 -- 2.1) Toon selector switch
 
 
+-------------------------------------------------------------------------------------------------------------------
+-- FUNCTIES DEFINIEREN
+
 
 -- 1) FYSIEKE SWITCHES EN SENSORS
--- 1.1) switch(bewegingWoonkamer): 
+-- 1.001) switch(bewegingWoonkamer): 
 --        a) licht uit wanneer er geen beweging is in de woonkamer
 --        b) licht aan wanneer het donker is en er iemand in de kamer is
 function bewegingWoonkamer(lichtknop)
@@ -44,7 +48,7 @@ function bewegingWoonkamer(lichtknop)
   end
 end
 
--- 1.2) switch(bewegingOverloop): verlichting op de overloop regelen
+-- 1.002) switch(bewegingOverloop): verlichting op de overloop regelen
 function bewegingOverloop(lamp)
   -- tot 23:00 uur het licht wat feller 
   if otherdevices["bewegingOverloop"] == "On" and otherdevices["schemerSensor"] == "On" and
@@ -70,7 +74,7 @@ function bewegingOverloop(lamp)
   end 
 end
 
--- 1.3) switch(bewegingVliering): licht op de vliering boven de garage schakelen op beweging
+-- 1.003) switch(bewegingVliering): licht op de vliering boven de garage schakelen op beweging
 function bewegingVliering(lamp)
   if otherdevices["bewegingVliering"] == "On" and otherdevices[lamp] == "Off" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
@@ -79,7 +83,7 @@ function bewegingVliering(lamp)
   end
 end
 
--- 1.4) switch(pirHal):  licht in de hal schakelen op beweging
+-- 1.004) switch(pirHal):  licht in de hal schakelen op beweging
 function pirHal(lamp)
   if otherdevices["pirHal"] == "On" then
     commandArray[#commandArray + 1] = {[lamp] = "Set Level 55"}
@@ -87,7 +91,7 @@ function pirHal(lamp)
   end
 end
 
--- 1.5) switchHal: handmatig licht aan/uit met schakelaar
+-- 1.005) switchHal: handmatig licht aan/uit met schakelaar
 function switchHal(switch)
   if otherdevices[switch] == "Click" and otherdevices["lichtWoonkamer"] == "Off" then 
     commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "On"}
@@ -98,7 +102,7 @@ function switchHal(switch)
   end
 end
 
--- 1.6) switchSlaapkamerMulti
+-- 1.006) switchSlaapkamerMulti
   function switchSlaapkamerMulti(switch)
     if otherdevices[switch] == "Click" and otherdevices_svalues["lichtSlaapkamer"] ~= "57" then
       commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Set Level 57"}
@@ -117,7 +121,7 @@ end
     end
   end
 
--- 1.7) switchSlaapkamerUni --> idx 182
+-- 1.007) switchSlaapkamerUni --> idx 182
 function switchSlaapkamerUni()
   if otherdevices ["lichtSlaapkamer"] == "Off" then 
     commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
@@ -127,20 +131,9 @@ function switchSlaapkamerUni()
   end
 end
 
--- 1.8) switchSlaapkamerCube --> idx 52
---function switchSlaapkamerCube()
--- if otherdevices["switchSlaapkamerCube"] == "shake_air" then
---    if otherdevices["lichtSlaapkamer"] == "Off" then
---      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
---      commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
---    elseif otherdevices["lichtSlaapkamer"] ~= "Off" then
---      commandArray["lichtSlaapkamer"] = "Off"
---    end
---  end
---  commandArray["switchSlaapkamerCube"] = "Off"
---end
 
--- 1.9) switchSlaapkamerMuur --> idx 138
+
+-- 1.009) switchSlaapkamerMuur --> idx 138
 function switchSlaapkamerMuur()
   if otherdevices["switchSlaapkamerMuur"] == "Off" then
     if otherdevices ["lichtSlaapkamer"] == "Off" then 
@@ -151,6 +144,16 @@ function switchSlaapkamerMuur()
       commandArray[#commandArray + 1] = {["lichtSlaapkamer"] = "Off"}
       commandArray[#commandArray + 1] = {["switchSlaapkamerMuur"] = "On"}
     end
+  end
+end
+
+-- 1.010) Google Chromecast Home Cinema --> idx 376
+function googleCast(status, volume)
+  if otherdevices[status] ~= "Sleeping" and 
+        (otherdevices["versterkerPower"] ~= "On" or otherdevices["versterkerInput"] ~= "STRM BOX")  then
+    commandArray[#commandArray + 1] = {["versterkerPower"] = "On"}
+    commandArray[#commandArray + 2] = {["versterkerInput"] = "Set Level 40 AFTER 5"}
+    commandArray[#commandArray + 3] = {[volume] = "On"}
   end
 end
 
@@ -220,11 +223,6 @@ if devicechanged["switchSlaapkamerUni"] then
   local functie = switchSlaapkamerUni()
 end
 
--- 8) switchSlaapkamerCube 
---if devicechanged["switchSlaapkamerCube"] then
---  local functie = switchSlaapkamerCube()
---end
-
 -- 9) switchSlaapkamerMuur
 if devicechanged["switchSlaapkamerMuur"] then 
   local functie = switchSlaapkamerMuur()
@@ -235,9 +233,18 @@ if devicechanged["schemerSensor"] then
   local functie = lichtSchakelaar("schemerSensor", "lichtPortiek")
 end
 
--- test
-if devicechanged["testSwitch"] then
-  print(otherdevices_svalues["lichtOverloop"])
+-- versterker aan zetten als chromecast bij versterker gaat spelen
+if devicechanged["castWoonkamerStatus"] then 
+  local functie = googleCast("castWoonkamerStatus", "castWoonkamerVolume")
 end
+if devicechanged["castHomeCinemaStatus"] then 
+  local functie = googleCast("castHomeCinemaStatus", "castHomeCinemaVolume")
+end
+
+
+-- test
+--if devicechanged["testSwitch"] then
+-- print(otherdevices_svalues["lichtOverloop"])
+--end
 
 return commandArray
