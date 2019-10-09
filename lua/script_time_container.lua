@@ -27,11 +27,11 @@ if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
 end
 
 -- 2a. dummy device voor bepalen dag/nacht
-if timeofday["nightTime"] == true and otherdevices["nightTime"] == "Off" then 
-   commandArray["nightTime"] = "On"
-elseif timeofday["nightTime"] == false and otherdevices["nightTime"] == "On" then
-   commandArray["nightTime"] = "Off"  
-end
+--if timeofday["nightTime"] == true and otherdevices["nightTime"] == "Off" then 
+--   commandArray["nightTime"] = "On"
+--elseif timeofday["nightTime"] == false and otherdevices["nightTime"] == "On" then
+--   commandArray["nightTime"] = "Off"  
+--end
 
 -- 2b. dummy device gebaseerd op LUX metingen
 schemerMinuten = tonumber(uservariables['schemerCounter'])

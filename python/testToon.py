@@ -14,6 +14,7 @@ toonSetpoint = 106
 toonSelector = 108
 toonPower = 105
 toonGas = 104
+toonSolar = 395
 # selector values
 thuis = ['10', '1']
 comfort = ['20', '0']
@@ -28,7 +29,7 @@ weg_temp = 1700
 vakantie_temp = 1700 
 
 # debug?
-debug = 0
+debug = 1
 
 # check Domoticz to match toonstate & selector switch settings
 domo_url = 'http://%s/json.htm?type=devices&rid=108' % domoticz_ip
@@ -70,10 +71,21 @@ if thermostatInfo['result'] == "ok":
     toon_url = 'http://%s/hdrv_zwave?action=getDevices' % toon_ip
     response = requests.get(toon_url)
     p1Info = json.loads(response.text)
+    
+    # now get p1 solar info 
+    toon_url = 'http://%s/happ_pwrusage?action=GetCurrentUsage' % toon_ip
+    response = requests.get(toon_url)
+    p1Solar = json.loads(response.text)   
+
+    # Usage
     powerUsage1 = round(p1Info['dev_2.5']['profileInfo']['CurrentElectricityQuantity'])
     powerUsage2 = round(p1Info['dev_2.3']['profileInfo']['CurrentElectricityQuantity'])
+    # solar
+    powerSolar = round(p1Solar['powerProduction']['value'])   
+    # combine data
     if p1Info['dev_2.5']['profileInfo']['CurrentElectricityFlow'] == 0:
         cons = round(p1Info['dev_2.3']['profileInfo']['CurrentElectricityFlow'])
+        supl = round(p1Info['dev_2.4']['profileInfo']['CurrentElectricityFlow'])
     else: 
         cons = round(p1Info['dev_2.5']['profileInfo']['CurrentElectricityFlow'])
     gasUsage = round(p1Info['dev_2.1']['profileInfo']['CurrentGasQuantity'])
@@ -94,8 +106,8 @@ if thermostatInfo['result'] == "ok":
     if levelD != state:
         resp = requests.get(url=domoticz_url, params=data)
     if debug == 1: print('update programma: %s' % json.loads(resp.text)['status'])
-    # p1: power
-    sval = '{};{};0;0;{};0'.format(powerUsage1,powerUsage2,cons)
+    # p1: power usage
+    sval = '{};{};0;0;{};{}'.format(powerUsage1,powerUsage2,cons,powerSolar)
     data = {'type':'command','param':'udevice','idx':'%s' % toonPower,'nvalue':'0','svalue':'%s' % sval}
     resp = requests.get(url=domoticz_url, params=data)
     if debug == 1: print('update power: %s' % json.loads(resp.text)['status'])
@@ -103,5 +115,4 @@ if thermostatInfo['result'] == "ok":
     data = {'type':'command','param':'udevice','idx':'{}'.format(toonGas),'nvalue':'0','svalue':'{}'.format(gasUsage)}
     resp = requests.get(url=domoticz_url, params=data)
     if debug == 1: print('update gas: %s' % json.loads(resp.text)['status'])
-
 

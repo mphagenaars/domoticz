@@ -24,7 +24,7 @@ require "functions"
 -- 1.005) switchHal --> idx 31
 -- 1.006) switchSlaapkamerMulti --> idx 35
 -- 1.007) switchSlaapkamerUni --> idx 182
--- 1.008) ..vervallen..
+-- 1.008) schemerSensor --> idx 360
 -- 1.009) switchSlaapkamerMuur --> idx 138
 -- 1.010) google chromecast --> idx 373 & 376
 
@@ -65,7 +65,7 @@ function bewegingOverloop(lamp)
     otherdevices_svalues["lichtOverloop"] ~= 1 then
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off AFTER 10"}
-  -- als het licht is en er is geen beweging op de overloop dan kan het licht uit
+  -- als het buiten licht is dan kan het licht op de overloop uit
   elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["schemerSensor"] == "Off" and
     otherdevices["lichtOverloop"] ~= "Off" then
       commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
@@ -123,11 +123,19 @@ end
 
 -- 1.007) switchSlaapkamerUni --> idx 182
 function switchSlaapkamerUni()
-  if otherdevices ["lichtSlaapkamer"] == "Off" then 
+  if otherdevices["lichtSlaapkamer"] == "Off" then 
     commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "On"}
     commandArray[#commandArray + 1] = {["lichtSlaapkamerOntspannen"] = "Off AFTER 10"}
   elseif otherdevices["lichtSlaapamer"] ~= "Off" then 
     commandArray["lichtSlaapkamer"] = "Off"
+  end
+end
+
+-- 1.008) schemerSensor --> idx 360
+function schemerSensor()
+  if otherdevices["schemerSensor"] == "Off" then
+    commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
+    commandArray[#commandArray + 1] = {["lichtWoonkamer"] = "Off"}
   end
 end
 
@@ -219,6 +227,11 @@ end
 -- 7) switchSlaapkamerUni
 if devicechanged["switchSlaapkamerUni"] then 
   local functie = switchSlaapkamerUni()
+end
+
+-- 8) schemerSensor
+if devicechanged["schemerSensor"] then
+  local functie = schemerSensor()
 end
 
 -- 9) switchSlaapkamerMuur
