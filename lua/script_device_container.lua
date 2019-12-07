@@ -27,6 +27,7 @@ require "functions"
 -- 1.008) schemerSensor --> idx 360
 -- 1.009) switchSlaapkamerMuur --> idx 138
 -- 1.010) google chromecast --> idx 373 & 376
+-- 1.011) powerplugKerstboom --> 344
 
 -- 2) VIRTUELE SWITCHES / SOFTWARE / APP
 -- 2.1) Toon selector switch
@@ -163,6 +164,16 @@ function googleCast(status, volume)
   end
 end
 
+-- 1.011) powerplugKerstboom
+function kerstboom(trigger)
+  if otherdevices[trigger] == "On" and tijdvak("06:00:00","21:29:59") then
+    commandArray[#commandArray + 1] = {["powerplugKerstboom"] = "On"}
+  elseif otherdevices[trigger] == "Off" and tijdvak("21:30:00","05:59:59") then
+    commandArray[#commandArray + 1] = {["powerplugKerstboom"] = "Off"}
+  end
+end 
+
+
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
 commandArray = {}
 -- 0) 
@@ -251,6 +262,13 @@ end
 if devicechanged["castHomeCinemaStatus"] then 
   local functie = googleCast("castHomeCinemaStatus", "castHomeCinemaVolume")
 end
+
+-- verlichting kerstboom aan- en uitschakelen
+if devicechanged["lichtWoonkamer"] then
+  local functie = kerstboom("lichtWoonkamer")
+end
+
+
 
 
 -- test
