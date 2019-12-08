@@ -167,11 +167,12 @@ end
 -- 1.011) powerplugKerstboom
 function kerstboom(trigger)
   if otherdevices[trigger] == "On" and tijdvak("06:00:00","21:29:59") then
-    commandArray[#commandArray + 1] = {["powerplugKerstboom"] = "On"}
+    commandArray[#commandArray + 1] = {["powerPlugKerstboom"] = "On"}
   elseif otherdevices[trigger] == "Off" and tijdvak("21:30:00","05:59:59") then
-    commandArray[#commandArray + 1] = {["powerplugKerstboom"] = "Off"}
+    commandArray[#commandArray + 1] = {["powerPlugKerstboom"] = "Off"}
   end
 end 
+
 
 
 -- vanaf hier regelen dat alles wordt geschakeld zoals gedefinieerd
@@ -267,8 +268,6 @@ end
 if devicechanged["lichtWoonkamer"] then
   local functie = kerstboom("lichtWoonkamer")
 end
-
-
 
 
 -- test
