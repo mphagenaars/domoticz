@@ -166,9 +166,10 @@ end
 
 -- 1.011) powerplugKerstboom
 function kerstboom(trigger)
-  if otherdevices[trigger] == "On" and tijdvak("06:00:00","21:29:59") then
+  if otherdevices[trigger] ~= "Off" and tijdvak("05:30:00","21:29:59") then
     commandArray[#commandArray + 1] = {["powerPlugKerstboom"] = "On"}
-  elseif otherdevices[trigger] == "Off" and tijdvak("21:30:00","05:59:59") then
+  elseif otherdevices[trigger] == "Off" and (tijdvak("21:30:00","23:59:59") or tijdvak("00:00:00","05:29:29")) then
+    print("De kerstboom zou nu uit moeten gaan")
     commandArray[#commandArray + 1] = {["powerPlugKerstboom"] = "Off"}
   end
 end 
@@ -257,7 +258,7 @@ if devicechanged["schemerSensor"] then
 end
 
 -- versterker aan zetten als chromecast bij versterker gaat spelen
-if devicechanged["castWoonkamerStatus"] then 
+if devicechanged["castSpeakersWoonkamerStatus"] then 
   local functie = googleCast("castWoonkamerStatus", "castWoonkamerVolume")
 end
 if devicechanged["castHomeCinemaStatus"] then 
