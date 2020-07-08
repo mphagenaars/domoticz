@@ -268,8 +268,11 @@ end
 
 
 -- test
---if devicechanged["testSwitch"] then
--- print(otherdevices_svalues["lichtOverloop"])
---end
+if devicechanged["testSwitch"] then
+  if otherdevices["versterkerPower"] == "On" 
+      and otherdevices["castSpeakersWoonkamerStatus"] ~= "Audio" then 
+    commandArray["versterkerPower"] = "Off"
+  end
+end
 
 return commandArray

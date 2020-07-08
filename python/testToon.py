@@ -6,7 +6,7 @@ import json, requests, datetime
 
 # INSTELLINGEN
 # ip
-toon_ip = '192.168.1.211' 
+toon_ip = '192.168.1.212' 
 domoticz_ip = '192.168.1.105:8080'
 # devices (idx)
 toonTemp = 107

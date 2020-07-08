@@ -104,4 +104,18 @@ end
 --   commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
 --end
 
+
+-- 7. iedere nacht de versterker een harde reset geven (stroom eraf) ivm instabiliteit Google Cast
+if (time.hour == 00 and time.min == 55) and otherdevices["versterkerPower"] == "On" 
+      and otherdevices["castSpeakersWoonkamerStatus"] ~= "Audio" then 
+   commandArray["versterkerPower"] = "Off"
+end
+if (time.hour == 01 and time.min == 00) and otherdevices["versterkerPower"] == "Off" 
+      and otherdevices["powerPlugVersterker"] == "On" then 
+   commandArray["powerPlugVersterker"] = "Off"
+end
+if (time.hour == 06 and time.min == 00) and otherdevices["powerPlugVersterker"] == "Off" then 
+   commandArray["powerPlugVersterker"] = "On"
+end
+
 return commandArray
