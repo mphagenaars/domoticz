@@ -67,11 +67,11 @@ function bewegingOverloop(lamp)
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off AFTER 10"}
   -- als het buiten licht is dan kan het licht op de overloop uit
-  elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["schemerSensor"] == "Off" and
-    otherdevices["lichtOverloop"] ~= "Off" then
-      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
-      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
-      commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
+  --elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["schemerSensor"] == "Off" and
+    --otherdevices["lichtOverloop"] ~= "Off" then
+      --commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
+      --commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
+      --commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
   end 
 end
 
@@ -257,9 +257,9 @@ if devicechanged["schemerSensor"] then
 end
 
 -- versterker aan zetten als chromecast bij versterker gaat spelen
-if devicechanged["castHomeCinemaStatus"] then 
-  local functie = googleCast("castHomeCinemaStatus", "castHomeCinemaVolume")
-end
+--if devicechanged["castHomeCinemaStatus"] then 
+--  local functie = googleCast("castHomeCinemaStatus", "castHomeCinemaVolume")
+--end
 
 -- verlichting kerstboom aan- en uitschakelen
 if devicechanged["lichtWoonkamer"] then

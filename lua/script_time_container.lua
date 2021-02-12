@@ -88,21 +88,21 @@ end
 
 
 -- 6. verlichting op de overloop aansturen (tot PIRS binnen zijn voorlopig tijdschakelaar gebruiken)
---if (time.hour == 17 and time.min == 00) then 
-   --commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
---   commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
---   commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
---elseif (time.hour == 20 and time.min == 00) then 
-   --commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
---   commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
---   commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
---end
+if (time.hour == 17 and time.min == 00) then 
+   commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
+   commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
+   commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "On"}
+elseif (time.hour == 20 and time.min == 00) then 
+   commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
+   commandArray[#commandArray + 1] = {["lichtOverloop"] = "On"}
+   commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
+end
 
---if timeofday['Daytime'] == true and otherdevices["lichtOverloop"] ~= "Off" then 
---   commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
---   commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}  
---   commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
---end
+if timeofday['Daytime'] == true and otherdevices["lichtOverloop"] ~= "Off" then 
+   commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
+   commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}  
+   commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
+end
 
 
 -- 7. iedere nacht de versterker een harde reset geven (stroom eraf) ivm instabiliteit Google Cast
