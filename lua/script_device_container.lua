@@ -42,7 +42,7 @@ require "functions"
 --        a) licht uit wanneer er geen beweging is in de woonkamer
 --        b) licht aan wanneer het donker is en er iemand in de kamer is
 function bewegingWoonkamer(lichtknop)
-  if otherdevices["bewegingWoonkamer"] == "Off" then
+  if otherdevices["bewegingWoonkamer"] == "Off" and otherdevices["castTvStatus"] ~= "Sleeping" then
     if otherdevices[lichtknop] ~= "Off" then commandArray[lichtknop] = "Off" end
   elseif otherdevices["bewegingWoonkamer"] == "On" and otherdevices["schemerSensor"] == "On" then
     if otherdevices[lichtknop] == "Off" then commandArray[lichtknop] = "On" end
