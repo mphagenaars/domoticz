@@ -66,12 +66,11 @@ function bewegingOverloop(lamp)
     otherdevices_svalues["lichtOverloop"] ~= 1 then
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "On"}
       commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off AFTER 10"}
-  -- als het buiten licht is dan kan het licht op de overloop uit
-  --elseif otherdevices["bewegingOverloop"] == "Off" and otherdevices["schemerSensor"] == "Off" and
-    --otherdevices["lichtOverloop"] ~= "Off" then
-      --commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
-      --commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
-      --commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
+  -- als het buiten licht genoeg is dan kan het licht op de overloop uit
+  elseif otherdevices["schemerSensor"] == "Off" and otherdevices["lichtOverloop"] ~= "Off" then
+      commandArray[#commandArray + 1] = {["lichtOverloopOntspannen"] = "Off"}
+      commandArray[#commandArray + 1] = {["lichtOverloopNachtlampje"] = "Off"}
+      commandArray[#commandArray + 1] = {["lichtOverloop"] = "Off"}
   end 
 end
 

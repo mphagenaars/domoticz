@@ -74,7 +74,9 @@ end
 -- 4. bewegingsdetectie overloop
 no_motion_minutes = tonumber(uservariables["nomotionCounterOverloop"])
  
-if (otherdevices["pirOverloop1"] == "Off" and otherdevices["pirOverloop2"] == "Off") then
+if (otherdevices["pirOverloop1"] == "Off" 
+      -- and otherdevices["pirOverloop2"] == "Off"
+         ) then
    no_motion_minutes = no_motion_minutes + 1
 else 
    no_motion_minutes = 0	
