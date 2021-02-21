@@ -14,7 +14,8 @@ commandArray = {}
 -- 1. bewegingsdetectie woonkamer
 no_motion_minutes = tonumber(uservariables["nomotionCounterWoonkamer"])
  
-if (otherdevices["pirZithoek"] == "Off" and otherdevices["pirEethoek"] == "Off") then
+if (otherdevices["pirZithoek"] == "Off" and otherdevices["pirEethoek"] == "Off" 
+      and otherdevices["castTvStatus"] == "Sleeping") then
    no_motion_minutes = no_motion_minutes + 1
 else 
    no_motion_minutes = 0	
