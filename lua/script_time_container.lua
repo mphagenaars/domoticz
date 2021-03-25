@@ -23,8 +23,14 @@ end
 
 commandArray["Variable:nomotionCounterWoonkamer"] = tostring(no_motion_minutes)
 
-if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
-   commandArray["bewegingWoonkamer"] = "Off"
+if time.hour >= 6 and time.hour <= 23 then 
+   if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 30 then
+      commandArray["bewegingWoonkamer"] = "Off"
+   end
+else
+   if otherdevices["bewegingWoonkamer"] == "On" and no_motion_minutes > 3 then
+      commandArray["bewegingWoonkamer"] = "Off"
+   end 
 end
 
 -- 2a. dummy device voor bepalen dag/nacht

@@ -1,0 +1,7 @@
+#!/usr/bin/python3
+
+domo_url = 'http://%s/json.htm?type=devices&rid=106' % domoticz_ip
+response = requests.get(domo_url)
+checkDomo = json.loads(response.text)
+
+if debug == 1: print('update temp: %s' % json.loads(resp.text)['status'
