@@ -2,6 +2,7 @@
 
 -- VARIABELEN DEFINIEREN
 local time = os.date("*t")
+local dayN = os.date("%w")
 
 -- functies ophalen uit extern lua-script
 local Current_Path = debug.getinfo(1).source:match("@?(.*/)")
@@ -125,6 +126,22 @@ if (time.hour == 01 and time.min == 00) and otherdevices["versterkerPower"] == "
 end
 if (time.hour == 06 and time.min == 00) and otherdevices["powerPlugVersterker"] == "Off" then 
    commandArray["powerPlugVersterker"] = "On"
+end
+
+--8. op werkdagen om 6:30 uur de radiator op de werkkamer wat hoger zetten en om 16:30 uur weer laag
+if (dayN >= 1 and dayN <= 5) and (time.hour == 06 and time.min == 30) then 
+   commandArray['SetSetPoint:408'] = '21.0'
+end
+if (dayN >= 1 and dayN <= 5) and (time.hour == 16 and time.min == 30) then
+   commandArray['SetSetPoint:408'] = '16.0'
+end
+
+--9. op woensdag om 6:30 uur de radiator op Emma's slaapkamer wat hoger zetten en om 16:30 uur weer laag
+if (dayN == 3) and (time.hour == 06 and time.min == 30) then 
+   commandArray['SetSetPoint:275'] = '21.0'
+end
+if (dayN == 3) and (time.hour == 16 and time.min == 30) then
+   commandArray['SetSetPoint:275'] = '17.0'
 end
 
 return commandArray
