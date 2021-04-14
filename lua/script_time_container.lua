@@ -130,24 +130,24 @@ end
 
 --8. op werkdagen om 6:30 uur de radiator op de werkkamer wat hoger zetten en om 17:00 uur weer laag
 if (time.wday > 01 and time.wday < 07) and (time.hour == 06 and time.min == 30) then 
-   if tonumber(otherdevices_svalues["setpointLogeerkamer"]) ~= 21.0 then 
+   if tonumber(otherdevices_svalues["setpointLogeerkamer"]) < 21.0 then 
       commandArray["SetSetPoint:408"] = '21.0'
    end
 end
 if (time.wday > 01 and time.wday < 07) and (time.hour == 17 and time.min == 00) then
-   if tonumber(otherdevices_svalues["setpointLogeerkamer"]) ~= 16.0 then 
+   if tonumber(otherdevices_svalues["setpointLogeerkamer"]) > 16.0 then 
       commandArray["SetSetPoint:408"] = '16.0'
    end
 end
 
 --9. op woensdag om 6:30 uur de radiator op Emma's slaapkamer wat hoger zetten en om 17:00 uur weer laag
-if (os.date("%w") == 3) and (time.hour == 06 and time.min == 30) then 
-   if tonumber(otherdevices_svalues["setpointEmma"]) ~= 21.0 then 
+if (time.wday == 4) and (time.hour == 06 and time.min == 30) then 
+   if tonumber(otherdevices_svalues["setpointEmma"]) < 21.0 then 
       commandArray["SetSetPoint:275"] = '21.0'
    end 
 end
-if (os.date("%w") == 3) and (time.hour == 17 and time.min == 00) then
-   if tonumber(otherdevices_svalues["setpointEmma"]) ~= 17.0 then 
+if (time.wday == 4) and (time.hour == 17 and time.min == 00) then
+   if tonumber(otherdevices_svalues["setpointEmma"]) > 17.0 then 
       commandArray["SetSetPoint:275"] = '17.0'
    end
 end
