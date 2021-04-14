@@ -6,7 +6,6 @@
 -- VARIABELEN DEFINIEREN
 local time = os.date("*t")
 
-
 -- functies ophalen uit extern lua-script
 local Current_Path = debug.getinfo(1).source:match("@?(.*/)")
 package.path = package.path .. ';' .. Current_Path .. '?.lua'
@@ -268,10 +267,10 @@ end
 
 -- test
 if devicechanged["testSwitch"] then
-  if otherdevices["versterkerPower"] == "On" 
-      and otherdevices["castSpeakersWoonkamerStatus"] ~= "Audio" then 
-    commandArray["versterkerPower"] = "Off"
-  end
+  --commandArray['SetSetPoint:408'] = '21.0'
+  --print( tostring(day) )
+  print(time.wday)
+  if time.wday == 4 then print( tonumber(otherdevices_svalues["setpointEmma"]) ) end
 end
 
 return commandArray
