@@ -13,7 +13,8 @@ require "functions"
 
 -------------------------------------------------------------------------------------------------------------------
 -- INDEX
--- 0) generieke functies --> allemaal naar functions.lua
+-- 0) generieke functies
+-- 0.001) tijdens de vakantie een apart programma afwerken
 
 -- 1) FYSIEKE SWITCHES EN SENSORS
 -- 1.001) bewegingWoonkamer --> idx 48
@@ -241,7 +242,8 @@ end
 
 -- 8) schemerSensor
 if devicechanged["schemerSensor"] then
-  local functie = schemerSensor()
+  local functie1 = schemerSensor()
+  local functie2 = lichtSchakelaar("schemerSensor", "lichtPortiek")
 end
 
 -- 9) switchSlaapkamerMuur
@@ -249,10 +251,6 @@ if devicechanged["switchSlaapkamerMuur"] then
   local functie = switchSlaapkamerMuur()
 end
 
--- licht in het portiek automatisch aan en uit schakelen
-if devicechanged["schemerSensor"] then 
-  local functie = lichtSchakelaar("schemerSensor", "lichtPortiek")
-end
 
 -- versterker aan zetten als chromecast bij versterker gaat spelen
 --if devicechanged["castHomeCinemaStatus"] then 
